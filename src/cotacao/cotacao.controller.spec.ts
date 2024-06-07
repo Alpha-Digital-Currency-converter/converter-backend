@@ -18,12 +18,31 @@ describe('todoController', () => {
     cotacaoController = moduleRef.get<CotacaoController>(CotacaoController);
   });
 
-  describe('findAll', () => {
-    it('should return an array of todo', async () => {
+  describe('createCotacao', () => {
+    it('should return a cotacao object', async () => {
       const cotacao: CreateCotacaoDto = {
         valor: 100,
-        moeda: 'USD',
+        moeda: 'EUR',
       };
+      const result = await Promise.resolve([
+        {
+          code: 'EUR',
+          name: 'Euro/Real',
+          value: 5.7756,
+          date: '2024-06-06T13:48:09.000Z',
+          total: 577.56,
+        },
+      ]);
+      jest
+        .spyOn(cotacaoService, 'createCotacao')
+        .mockImplementation(async () => result);
+
+      expect(await cotacaoController.createCotacao(cotacao)).toBe(result);
+    });
+  });
+
+  describe('getCotacoes', () => {
+    it('should return an array of cotações', async () => {
       const result = await Promise.resolve([
         {
           code: 'EUR',
@@ -41,10 +60,10 @@ describe('todoController', () => {
         },
       ]);
       jest
-        .spyOn(cotacaoService, 'createCotacao')
+        .spyOn(cotacaoService, 'getCotacoes')
         .mockImplementation(async () => result);
 
-      expect(await cotacaoController.createCotacao(cotacao)).toBe(result);
+      expect(await cotacaoController.getCotacoes()).toBe(result);
     });
   });
 });
