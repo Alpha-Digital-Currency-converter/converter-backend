@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { ICotacao } from './dto/icotacao';
 import { Cotacao } from './entities/cotacao.entity';
 import { CreateCotacaoDto } from './dto/create-cotacao.dto';
@@ -29,6 +29,15 @@ export class CotacaoService {
         (result[0].high * createCotacao.valor).toFixed(2),
       );
       return novaCotacao;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getCotacoes(): Promise<Cotacao[]> {
+    try {
+      const result = await this.prisma.cotacao.findMany({ take: 10 });
+      return result;
     } catch (error) {
       console.log(error);
     }
