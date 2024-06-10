@@ -34,12 +34,35 @@ export class CotacaoService {
     }
   }
 
-  async getCotacoes(): Promise<Cotacao[]> {
+  async getCotacoes(moeda: string): Promise<Cotacao[]> {
     try {
-      const result = await this.prisma.cotacao.findMany({ take: 10 });
-      return result;
+      const response = await fetch(
+        `https://economia.awesomeapi.com.br/json/daily/${moeda}/10`,
+      );
+      const result = await response.json();
+
+      const cotacoes: ICotacao[] = result.map((cotacao: any) => {
+        const date = new Date(Number(cotacao.timestamp) * 1000);
+        date.setUTCHours(date.getUTCHours() - 3);
+        return {
+          code: cotacao.code,
+          name: cotacao.name,
+          value: Number(cotacao.high),
+          date: date,
+        };
+      });
+      return cotacoes;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
+
+  // async getCotacoes(): Promise<Cotacao[]> {
+  //   try {
+  //     const result = await this.prisma.cotacao.findMany({ take: 10 });
+  //     return result;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 }

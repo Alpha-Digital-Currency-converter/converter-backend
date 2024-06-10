@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CotacaoService } from './cotacao.service';
 import { Cotacao } from './entities/cotacao.entity';
 import { CreateCotacaoDto } from './dto/create-cotacao.dto';
@@ -11,8 +11,8 @@ export class CotacaoController {
   createCotacao(@Body() createCotacao: CreateCotacaoDto): Promise<Cotacao> {
     return this.cotacaoService.createCotacao(createCotacao);
   }
-  @Get()
-  getCotacoes(): Promise<Cotacao[]> {
-    return this.cotacaoService.getCotacoes();
+  @Get(':moeda')
+  getCotacoes(@Param('moeda') moeda: string): Promise<Cotacao[]> {
+    return this.cotacaoService.getCotacoes(moeda);
   }
 }
